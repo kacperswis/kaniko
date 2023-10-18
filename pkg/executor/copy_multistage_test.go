@@ -39,7 +39,7 @@ ENV test test
 
 From scratch as second
 COPY --from=first copied/bam.txt output/bam.txt`
-		ioutil.WriteFile(filepath.Join(testDir, "workspace", "Dockerfile"), []byte(dockerFile), 0755)
+		os.WriteFile(filepath.Join(testDir, "workspace", "Dockerfile"), []byte(dockerFile), 0755)
 		opts := &config.KanikoOptions{
 			DockerfilePath: filepath.Join(testDir, "workspace", "Dockerfile"),
 			SrcContext:     filepath.Join(testDir, "workspace"),
@@ -48,13 +48,12 @@ COPY --from=first copied/bam.txt output/bam.txt`
 		_, err := DoBuild(opts)
 		testutil.CheckNoError(t, err)
 		// Check Image has one layer bam.txt
-		files, err := ioutil.ReadDir(filepath.Join(testDir, "output"))
+		files, err := os.ReadDir(filepath.Join(testDir, "output"))
 		if err != nil {
 			t.Fatal(err)
 		}
 		testutil.CheckDeepEqual(t, 1, len(files))
 		testutil.CheckDeepEqual(t, files[0].Name(), "bam.txt")
-
 	})
 
 	t.Run("copy a file across multistage into a directory", func(t *testing.T) {
@@ -67,7 +66,7 @@ ENV test test
 
 From scratch as second
 COPY --from=first copied/bam.txt output/`
-		ioutil.WriteFile(filepath.Join(testDir, "workspace", "Dockerfile"), []byte(dockerFile), 0755)
+		os.WriteFile(filepath.Join(testDir, "workspace", "Dockerfile"), []byte(dockerFile), 0755)
 		opts := &config.KanikoOptions{
 			DockerfilePath: filepath.Join(testDir, "workspace", "Dockerfile"),
 			SrcContext:     filepath.Join(testDir, "workspace"),
@@ -75,7 +74,7 @@ COPY --from=first copied/bam.txt output/`
 		}
 		_, err := DoBuild(opts)
 		testutil.CheckNoError(t, err)
-		files, err := ioutil.ReadDir(filepath.Join(testDir, "output"))
+		files, err := os.ReadDir(filepath.Join(testDir, "output"))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -92,7 +91,7 @@ ENV test test
 
 From scratch as second
 COPY --from=first copied another`
-		ioutil.WriteFile(filepath.Join(testDir, "workspace", "Dockerfile"), []byte(dockerFile), 0755)
+		os.WriteFile(filepath.Join(testDir, "workspace", "Dockerfile"), []byte(dockerFile), 0755)
 		opts := &config.KanikoOptions{
 			DockerfilePath: filepath.Join(testDir, "workspace", "Dockerfile"),
 			SrcContext:     filepath.Join(testDir, "workspace"),
@@ -101,7 +100,7 @@ COPY --from=first copied another`
 		_, err := DoBuild(opts)
 		testutil.CheckNoError(t, err)
 		// Check Image has one layer bam.txt
-		files, err := ioutil.ReadDir(filepath.Join(testDir, "another"))
+		files, err := os.ReadDir(filepath.Join(testDir, "another"))
 		if err != nil {
 			t.Fatal(err)
 		}
